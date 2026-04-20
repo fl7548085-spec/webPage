@@ -1,0 +1,474 @@
+<!DOCTYPE html>
+<html lang="zh-CN">
+
+<head>
+    <meta charset="UTF-8">
+    <meta name="viewport" content="width=device-width, initial-scale=1.0">
+    <title>장빈 - 3D Artist & Designer</title>
+    <style>
+        /* --- 1. 核心变量与重置 --- */
+        :root {
+            --primary: #1a1a2e;
+            --accent: #3b82f6;
+            --text-main: #1f2937;
+            --text-sub: #6b7280;
+            --card-bg: rgba(255, 255, 255, 0.85); /* 半透明卡片 */
+            --radius: 20px;
+        }
+
+        * { margin: 0; padding: 0; box-sizing: border-box; }
+
+        body {
+            font-family: 'Inter', -apple-system, BlinkMacSystemFont, sans-serif;
+            line-height: 1.6;
+            color: var(--text-main);
+            
+            /* --- 重点修改：动态微渐变背景 --- */
+            background: linear-gradient(-45deg, #8888b8, #8a73a3, #818693, #a8b4c0);
+            background-size: 400% 400%;
+            animation: gradientBG 15s ease infinite;
+            min-height: 100vh;
+        }
+
+        /* 背景流动动画 */
+        @keyframes gradientBG {
+            0% { background-position: 0% 50%; }
+            50% { background-position: 100% 50%; }
+            100% { background-position: 0% 50%; }
+        }
+
+        a { text-decoration: none; color: inherit; transition: 0.2s; }
+        ul { list-style: none; }
+
+        /* --- 2. 布局与容器 --- */
+        .container {
+            max-width: 960px;
+            margin: 0 auto;
+            padding: 0 24px;
+        }
+
+        /* --- 3. 玻璃拟态导航栏 --- */
+        header {
+            position: sticky;
+            top: 20px; /* 悬浮效果 */
+            z-index: 100;
+            margin-bottom: 40px;
+        }
+
+        .nav-card {
+            background: rgba(255, 255, 255, 0.7);
+            backdrop-filter: blur(12px);
+            -webkit-backdrop-filter: blur(12px);
+            border: 1px solid rgba(255, 255, 255, 0.5);
+            border-radius: 50px;
+            padding: 12px 32px;
+            display: flex;
+            justify-content: space-between;
+            align-items: center;
+            box-shadow: 0 4px 20px rgba(0, 0, 0, 0.03);
+        }
+
+        .logo {
+            font-size: 1.3rem;
+            font-weight: 800;
+            color: var(--primary);
+            letter-spacing: -0.5px;
+        }
+
+        .nav-links { display: flex; gap: 24px; }
+        .nav-links a {
+            font-size: 0.9rem;
+            font-weight: 500;
+            color: var(--text-sub);
+        }
+        .nav-links a:hover { color: var(--accent); }
+
+        /* --- 4. 通用卡片样式 --- */
+        .card {
+            background: var(--card-bg);
+            border-radius: var(--radius);
+            padding: 48px;
+            margin-bottom: 32px;
+            box-shadow: 0 10px 30px rgba(0, 0, 0, 0.04);
+            border: 1px solid rgba(255, 255, 255, 0.6);
+            backdrop-filter: blur(5px);
+            transition: transform 0.3s ease, box-shadow 0.3s ease;
+        }
+
+        .card:hover {
+            transform: translateY(-4px);
+            box-shadow: 0 20px 40px rgba(0, 0, 0, 0.06);
+        }
+
+        h2 {
+            font-size: 1.8rem;
+            font-weight: 700;
+            margin-bottom: 24px;
+            color: var(--primary);
+            display: inline-block;
+        }
+        
+        /* 标题装饰点 */
+        h2::before {
+            content: '';
+            display: inline-block;
+            width: 8px;
+            height: 24px;
+            background: var(--accent);
+            border-radius: 4px;
+            margin-right: 12px;
+            vertical-align: middle;
+        }
+
+        /* --- 5. Hero 区域 --- */
+        .hero {
+            text-align: center;
+            padding: 60px 40px;
+            position: relative;
+            overflow: hidden;
+        }
+
+        /* 装饰光晕 */
+        .hero::after {
+            content: '';
+            position: absolute;
+            top: -50%;
+            left: -20%;
+            width: 140%;
+            height: 200%;
+            background: radial-gradient(circle, rgba(59,130,246,0.08) 0%, rgba(255,255,255,0) 60%);
+            z-index: -1;
+            pointer-events: none;
+        }
+
+        .avatar {
+            width: 200px;
+            height: 200px;
+            border-radius: 50%;
+            object-fit: cover;
+            margin-bottom: 24px;
+            border: 4px solid white;
+            box-shadow: 0 8px 24px rgba(0,0,0,0.1);
+            transition: transform 0.3s;
+        }
+        .avatar:hover { transform: scale(1.05) rotate(3deg); }
+
+        .hero-title {
+            font-size: 2.8rem;
+            font-weight: 800;
+            margin-bottom: 12px;
+            color: var(--primary);
+        }
+
+        .hero-subtitle {
+            font-size: 1.1rem;
+            color: var(--accent);
+            font-weight: 600;
+            margin-bottom: 20px;
+            letter-spacing: 1px;
+            text-transform: uppercase;
+        }
+
+        .hero-desc {
+            max-width: 600px;
+            margin: 0 auto 32px;
+            color: var(--text-sub);
+        }
+
+        .btn-group { display: flex; justify-content: center; gap: 16px; }
+        
+        .btn {
+            padding: 12px 28px;
+            border-radius: 50px;
+            font-weight: 600;
+            cursor: pointer;
+            transition: all 0.2s;
+        }
+        .btn-primary {
+            background: var(--primary);
+            color: white;
+            box-shadow: 0 4px 12px rgba(26, 26, 46, 0.2);
+        }
+        .btn-primary:hover { background: #2d2d44; transform: translateY(-2px); }
+        
+        .btn-outline {
+            background: white;
+            border: 1px solid #e5e7eb;
+            color: var(--text-main);
+        }
+        .btn-outline:hover { border-color: var(--primary); color: var(--primary); }
+
+                /* --- 6. 跑马灯画廊 (Marquee) --- */
+        .projects-container { 
+            position: relative; 
+            padding: 20px 0; 
+            overflow: hidden; /* 隐藏超出部分 */
+            width: 100%;
+        }
+        
+        .projects-track {
+            display: flex;
+            gap: 24px;
+            width: max-content; /* 宽度由内容决定 */
+            /* 运行动画：名称 时长 线性 无限循环 */
+            animation: scrollLeft 30s linear infinite; 
+        }
+
+        /* 鼠标悬停时暂停播放，方便用户查看 */
+        .projects-track:hover {
+            animation-play-state: paused;
+        }
+
+        /* 定义向左滚动的动画 */
+        @keyframes scrollLeft {
+            0% { transform: translateX(0); }
+            100% { transform: translateX(-50%); } /* 移动总宽度的一半（因为内容复制了一份） */
+        }
+
+        .project-slide {
+            /* 固定每张卡片的宽度，防止被压缩 */
+            width: 260px; 
+           
+            flex-shrink: 0; /* 禁止收缩 */
+            background: white;
+            border-radius: 16px;
+            overflow: hidden;
+            box-shadow: 0 4px 12px rgba(0,0,0,0.05);
+            transition: all 0.3s;
+            border: 1px solid #f0f0f0;
+        }
+        
+        .project-slide:hover { 
+            transform: scale(1.05); /* 悬停放大 */
+            box-shadow: 0 12px 24px rgba(0,0,0,0.15); 
+            z-index: 10;
+        }
+        
+        .project-slide img { 
+            width:100%; 
+            height: 385px; /* 统一高度 */
+            object-fit: cover; 
+            display: block;
+        }
+        
+        .project-title {
+            padding: 12px;
+            font-size: 0.9rem;
+            font-weight: 600;
+            text-align: center;
+            white-space: nowrap;
+            overflow: hidden;
+            text-overflow: ellipsis;
+            color: var(--text-main);
+        }
+
+        /* 隐藏原来的左右按钮，因为现在是自动滚动 */
+        .nav-btn { display: none; }
+
+        .nav-btn {
+            position: absolute;
+            top: 50%;
+            transform: translateY(-50%);
+            width: 40px;
+            height: 40px;
+            border-radius: 50%;
+            background: white;
+            border: 1px solid #eee;
+            box-shadow: 0 4px 12px rgba(0,0,0,0.1);
+            cursor: pointer;
+            z-index: 10;
+            display: flex;
+            align-items: center;
+            justify-content: center;
+            transition: 0.2s;
+        }
+        .nav-btn:hover { background: var(--primary); color: white; }
+        .prev-btn { left: -20px; }
+        .next-btn { right: -20px; }
+
+        /* --- 7. 其他细节 --- */
+        .about-content p { margin-bottom: 12px; color: var(--text-sub); }
+        
+        footer {
+            text-align: center;
+            padding: 40px 0;
+            color: #9ca3af;
+            font-size: 0.9rem;
+        }
+
+        @media (max-width: 768px) {
+            .project-slide { flex: 0 0 85%; }
+            .nav-links { display: none; }
+            .hero-title { font-size: 2.2rem; }
+            .nav-btn { display: none; }
+        }
+    </style>
+</head>
+
+<body>
+    <div class="container">
+        <!-- 悬浮导航 -->
+        <header>
+            <div class="nav-card">
+                <div class="logo"><span style="color:var(--accent)">●</span> ZHANG BIN</div>
+                <ul class="nav-links">
+                    <li><a href="#about">학력</a></li>
+                    <li><a href="#skills">경력</a></li>
+                    <li><a href="#projects">작품</a></li>
+                    <li><a href="#contact">연락처</a></li>
+                    <li><a href="#abouts">학력</a></li>
+                </ul>
+            </div>
+        </header>
+
+        <!-- Hero -->
+        <section class="hero card">
+            <img class="avatar" src="image/ss.jpg" alt="Profile">
+            <h1 class="hero-title">장빈</h1>
+            <p class="hero-subtitle">3D Modeling | Video Design | AI Animation</p>
+            <p <p class="hero-desc" style="font-size: 1.2rem; font-weight: bold;">
+    fl7548085@gmail.com<br>
+</p>
+                
+            </p>
+            <div class="btn-group">
+                <a href="#contact" class="btn btn-primary">연락 메일</a>
+                <a href="#projects" class="btn btn-outline">작품 보기</a>
+            </div>
+        </section>
+
+        <!-- Education -->
+        <section id="about" class="card">
+            <h2>학력 (Education)</h2>
+            <div class="about-content">
+                <p><strong>2026 - Present</strong> | 한양대학교 영상디자인 박사과정 재학</p>
+                <p><strong>2026</strong> | 상명대학교 애니메이션·만화 전공 졸업</p>
+                <p><strong>2017</strong> | 중국 길림애니메이션대학교 애니메이션 전공 졸업</p>
+            </div>
+        </section>
+
+        <!-- Experience -->
+        <section id="skills" class="card">
+            <h2>프로젝트 경험 (Experience)</h2>
+            <div class="about-content">
+                <p><strong>2023</strong> | 후난성 천저우시 박물관 개인전 「3D 수묵 예술 속 중국 장자 사상의 시각적 표현」 개최</p>
+                <p><strong>2017 ~ 2023</strong> | 샤먼 base문화발전유한회사 3D 모델러 근무<br>
+                <span style="color:#888; font-size:0.9em;">참여 프로젝트: Wish Dragon, Goodbye Monster, Free Fire, Willy's Wonderland 등</span></p>
+                <p><strong>2016</strong> | 중국 넷드래곤 웹소프트 3D 배경 모델러 근무 (魔域 프로젝트)</p>
+            </div>
+        </section>
+
+        <!-- Projects Gallery -->
+        <section id="projects" class="card">
+            <h2>프로젝트 참여 (Project)</h2>
+            <p style="margin-bottom: 24px; color: #666;"></p>
+            
+            <div class="projects-container">
+                
+                <div class="projects-track" id="projectsTrack">
+                    <!-- === 第一组图片 (原始数据) === -->
+                    <div class="project-slide">
+                        <img src="image/魔域.jpg" alt="Eudemons Online">
+                        <h3 class="project-title">魔域 (Eudemons Online)</h3>
+                    </div>
+                    <div class="project-slide">
+                        <img src="image/许愿神龙.jpg"  alt="Wish Dragon">
+                        <h3 class="project-title">Wish Dragon</h3>
+                    </div>
+                    <div class="project-slide">
+                        <img src="image/山海经之再见怪兽.jpg" alt="Goodbye Monster">
+                        <h3 class="project-title">Goodbye Monster</h3>
+                    </div>
+                    <div class="project-slide">
+                        <img src="image/长空之王.jpg" alt="Born to Fly">
+                        <h3 class="project-title">Grena Game PV</h3>
+                    </div>
+                    <div class="project-slide">
+                        <img src="image/Willy's Wonderland.jpg" alt="Willy's Wonderland">
+                        <h3 class="project-title">Willy's Wonderland</h3>
+                    </div>
+                    <div class="project-slide">
+                        <img src="image/蛋宝大营救.jpg" alt="Out of the Nest">
+                        <h3 class="project-title">Born to Fly</h3>
+                    </div>
+                    <div class="project-slide">
+                        <img src="image/Free Fire.jpg" alt="Free Fire">
+                        <h3 class="project-title">Born to Fly</h3>
+                    </div>
+
+                    <!-- === 第二组图片 (复制一份用于无缝衔接) === -->
+                    <div class="project-slide">
+                        <img src="image/魔域.jpg" alt="Eudemons Online">
+                        <h3 class="project-title">魔域 (Eudemons Online)</h3>
+                    </div>
+                    <div class="project-slide">
+                        <img src="image/许愿神龙.jpg" alt="Wish Dragon">
+                        <h3 class="project-title">Wish Dragon</h3>
+                    </div>
+                    <div class="project-slide">
+                        <img src="image/山海经之再见怪兽.jpg" alt="Goodbye Monster">
+                        <h3 class="project-title">Goodbye Monster</h3>
+                    </div>
+                    <div class="project-slide">
+                        <img src="image/长空之王.jpg" alt="Born to Fly">
+                        <h3 class="project-title">Grena Game PV</h3>
+                    </div>
+                    <div class="project-slide">
+                        <img src="image/Willy's Wonderland.jpg" alt="Willy's Wonderland">
+                        <h3 class="project-title">Willy's Wonderland</h3>
+                    </div>
+                    <div class="project-slide">
+                        <img src="image/蛋宝大营救.jpg" alt="Out of the Nest">
+                        <h3 class="project-title">Born to Fly</h3>
+                    </div>
+                    <div class="project-slide">
+                        <img src="image/Free Fire.jpg" alt="Free Fire">
+                        <h3 class="project-title">Born to Fly</h3>
+                    </div>
+                </div>
+
+                
+                
+            </div>
+        </section>
+   <!-- Education -->
+        <section id="abouts" class="card">
+            <h2>학력 (Education)</h2>
+            <div class="about-content">
+                <p><strong>2026 - Present</strong> | 한양대학교 영상디자인 박사과정 재학</p>
+                <p><strong>2026</strong> | 상명대학교 애니메이션·만화 전공 졸업</p>
+                <p><strong>2017</strong> | 중국 길림애니메이션대학교 애니메이션 전공 졸업</p>
+            </div>
+        </section>
+        <!-- Contact -->
+        <section id="contact" class="card" style="text-align: center;">
+            <h2>이메일 및 전화번호 (Contact)</h2>
+            <p class="hero-desc" style="margin: 0 auto 24px;">fl7548085@gmail.com👋</p>
+             <p class="hero-desc" style="margin: 0 auto 24px;">01083289187👋</p>
+            <a class="btn btn-primary" href="mailto:example@example.com" style="padding: 14px 36px; font-size: 1rem;">
+                📧发送邮件
+            </a>
+        </section>
+
+        <footer>
+            <p>&copy; 2026 Jang Bin. All rights reserved.</p>
+        </footer>
+    </div>
+
+      <script>
+        // 仅保留平滑滚动锚点链接
+        document.querySelectorAll('a[href^="#"]').forEach(anchor => {
+            anchor.addEventListener('click', function (e) {
+                e.preventDefault();
+                const target = document.querySelector(this.getAttribute('href'));
+                if (target) target.scrollIntoView({ behavior: 'smooth', block: 'start' });
+            });
+        });
+
+       
+        
+    </script>
+    
+    
+</body>
+</html>
