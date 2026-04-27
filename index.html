@@ -47,7 +47,7 @@
 
         /* --- 2. 布局与容器 --- */
         .container {
-            max-width: 960px;
+            max-width: 2300px;
             margin: 0 auto;
             padding: 0 24px;
         }
@@ -89,20 +89,31 @@
         .nav-links a:hover { color: var(--accent); }
 
         /* --- 4. 通用卡片样式 --- */
+               /* --- 4. 通用卡片样式 (方案一：极光渐变) --- */
         .card {
-            background: var(--card-bg);
+            background: rgba(255, 255, 255, 0.7); /* 稍微降低不透明度以透出背景 */
             border-radius: var(--radius);
             padding: 48px;
             margin-bottom: 32px;
-            box-shadow: 0 10px 30px rgba(0, 0, 0, 0.04);
-            border: 1px solid rgba(255, 255, 255, 0.6);
-            backdrop-filter: blur(5px);
-            transition: transform 0.3s ease, box-shadow 0.3s ease;
+            
+            /* 核心：利用 background-clip 实现渐变边框 */
+            border: double 4px transparent;
+            background-image: linear-gradient(white, white), 
+                              linear-gradient(135deg, #446498, #8a73a3, #436192);
+            background-origin: border-box;
+            background-clip: padding-box, border-box;
+            
+            box-shadow: 0 10px 30px rgba(59, 130, 246, 0.15); /* 带颜色的阴影 */
+            backdrop-filter: blur(10px);
+            transition: all 0.3s ease;
         }
 
         .card:hover {
-            transform: translateY(-4px);
-            box-shadow: 0 20px 40px rgba(0, 0, 0, 0.06);
+            transform: translateY(-5px);
+            box-shadow: 0 20px 40px rgba(59, 130, 246, 0.25);
+            /* 悬停时加深渐变 */
+            background-image: linear-gradient(white, white), 
+                              linear-gradient(135deg, #2563eb, #7c3aed, #2563eb);
         }
 
         h2 {
@@ -125,15 +136,19 @@
             vertical-align: middle;
         }
 
-        /* --- 5. Hero 区域 --- */
+        /* --- 5. Hero 区域 (修改为左右布局) --- */
         .hero {
-            text-align: center;
-            padding: 60px 40px;
+            display: flex;             /* 启用 Flex 布局 */
+            align-items: center;       /* 关键：垂直居中 */
+            justify-content: center;   /* 关键：整体水平居中 */
+            padding: 60px 80px;        /* 增加左右内边距 */
             position: relative;
             overflow: hidden;
+            gap: 100px;                 /* 头像和文字之间的间距 */
+            text-align: left;          /* 文字左对齐 */
         }
 
-        /* 装饰光晕 */
+        /* 装饰光晕保持不变 */
         .hero::after {
             content: '';
             position: absolute;
@@ -146,17 +161,92 @@
             pointer-events: none;
         }
 
+        /* 左侧头像容器 */
+        .hero-image-wrapper {
+            flex-shrink: 0; /* 防止头像被压缩 */
+            position: relative;
+            z-index: 1;
+        }
+
+        /* 头像样式保持不变 */
         .avatar {
-            width: 200px;
-            height: 200px;
+            width: 350px;
+            height: 350px;
             border-radius: 50%;
             object-fit: cover;
-            margin-bottom: 24px;
+            margin-bottom: 0; /* 移除底部间距，因为现在是Flex布局 */
             border: 4px solid white;
             box-shadow: 0 8px 24px rgba(0,0,0,0.1);
             transition: transform 0.3s;
         }
         .avatar:hover { transform: scale(1.05) rotate(3deg); }
+
+        /* 右侧文字内容容器 */
+             /* 右侧文字内容容器 */
+        .hero-content {
+            flex: 1; 
+            max-width: 700px; 
+            z-index: 1;
+            display: flex;
+            flex-direction: column;
+            justify-content: center; 
+            align-items: center;      /* <--- 新增：让内部元素水平居中 */
+            text-align: center;       /* <--- 新增：让文字内容居中 */
+        }
+
+        .hero-title {
+            font-size: 2.8rem;
+            font-weight: 800;
+            margin-bottom: 12px;
+            color: var(--primary);
+            line-height: 1.1;
+        }
+
+        .hero-subtitle {
+            font-size: 1.1rem;
+            color: var(--accent);
+            font-weight: 600;
+            margin-bottom: 20px;
+            letter-spacing: 1px;
+            text-transform: uppercase;
+        }
+
+        .hero-desc {
+            max-width: 100%; 
+            margin: 0 0 32px 0;
+            color: var(--text-sub);
+            font-size: 1.2rem;
+            line-height: 1.6;
+        }
+
+        .btn-group { 
+            display: flex; 
+            gap: 16px; 
+            justify-content: flex-start; /* 按钮左对齐 */
+        }
+        
+        .btn {
+            padding: 12px 28px;
+            border-radius: 50px;
+            font-weight: 600;
+            cursor: pointer;
+            transition: all 0.2s;
+        }
+
+        /* --- 移动端适配：小屏幕恢复上下布局 --- */
+        @media (max-width: 768px) {
+            .hero {
+                flex-direction: column; /* 手机上恢复上下排列 */
+                text-align: center;
+                padding: px 24px;
+                gap: 40px;
+            }
+            .hero-content {
+                align-items: center; /* 手机端正中 */
+            }
+            .btn-group { justify-content: center; }
+            .avatar { margin-bottom: 24px; } /* 恢复头像底部间距 */
+        }
 
         .hero-title {
             font-size: 2.8rem;
@@ -203,7 +293,7 @@
         }
         .btn-outline:hover { border-color: var(--primary); color: var(--primary); }
 
-                /* --- 6. 跑马灯画廊 (Marquee) --- */
+        /* --- 6. 第一个跑马灯画廊 (Project) --- */
         .projects-container { 
             position: relative; 
             padding: 20px 0; 
@@ -231,40 +321,106 @@
         }
 
         .project-slide {
-            /* 固定每张卡片的宽度，防止被压缩 */
-            width: 260px; 
-           
-            flex-shrink: 0; /* 禁止收缩 */
+            /* 👇 核心修改：放大尺寸 + 超宽淡蓝边框 */
+            width: 400px;          
+            flex-shrink: 0; 
             background: white;
-            border-radius: 16px;
-            overflow: hidden;
-            box-shadow: 0 4px 12px rgba(0,0,0,0.05);
+            border-radius: 40px;   
+            overflow: hidden;      /* 保持隐藏，防止图片溢出 */
+            box-shadow: 0 10px 25px rgba(0,0,0,0.1); 
             transition: all 0.3s;
-            border: 1px solid #f0f0f0;
+            
+            /* 👇 修改这里：加宽边框到 8px，颜色稍微加深一点以便看见 */
+            border: 5px solid rgba(147, 7, 240, 0.4); 
+            
+            /* 👇 新增：确保内容在边框内部，不被遮挡 */
+            box-sizing: border-box; 
         }
         
+        /* 可选：鼠标悬停时边框变深且发光 */
         .project-slide:hover { 
-            transform: scale(1.05); /* 悬停放大 */
-            box-shadow: 0 12px 24px rgba(0,0,0,0.15); 
+            transform: scale(1.05); 
+            box-shadow: 0 0 20px rgba(59, 130, 246, 0.6), 0 20px 40px rgba(0,0,0,0.2); /* 增加蓝色光晕 */
             z-index: 10;
+            border-color: rgba(59, 130, 246, 1); /* 悬停时变成实心蓝 */
         }
         
         .project-slide img { 
-            width:100%; 
-            height: 385px; /* 统一高度 */
+            width: 100%; 
+            height: 550px;         
             object-fit: cover; 
             display: block;
+            border-radius: 32px;   /* 👇 新增：让图片圆角比卡片小一点，露出边框角落 */
         }
         
         .project-title {
-            padding: 12px;
-            font-size: 0.9rem;
+            padding: 16px;         /* 增加内边距 */
+            font-size: 1.3rem;     /* 字体稍微加大 */
             font-weight: 600;
             text-align: center;
             white-space: nowrap;
             overflow: hidden;
             text-overflow: ellipsis;
             color: var(--text-main);
+            background: white;     /* 确保标题背景干净 */
+        }
+
+        /* --- 8. 独立跑马灯样式 (用于 작품 板块) --- */
+        .marquee-custom-container {
+            position: relative;
+            padding: 20px 0;
+            overflow: hidden;
+            width: 100%;
+            margin-top: 20px;
+        }
+
+        .marquee-custom-track {
+            display: flex;
+            gap: 20px; 
+            width: max-content; /* 关键：宽度由内容决定，不能是 100% */
+            animation: scrollCustom 30s linear infinite; /* 速度稍微调慢一点更流畅 */
+        }
+
+        .marquee-custom-track:hover {
+            animation-play-state: paused;
+        }
+
+        @keyframes scrollCustom {
+            0% { transform: translateX(0); }
+            100% { transform: translateX(-50%); } /* 关键：移动一半的距离，因为内容复制了一份 */
+        }
+
+        /* 独立卡片的样式，可以单独控制大小 */
+        .custom-slide {
+            width: 300px;          /* 👈 这里控制新跑马灯的图片宽度 */
+            flex-shrink: 0;
+            background: white;
+            border-radius: 20px;
+            overflow: hidden;
+            box-shadow: 0 5px 15px rgba(0,0,0,0.1);
+            transition: all 0.3s;
+            border: 4px solid rgba(147, 7, 240, 0.3); /* 👈 这里控制新跑马灯的边框颜色 */
+        }
+
+        .custom-slide:hover {
+            transform: scale(1.05);
+            box-shadow: 0 10px 25px rgba(0,0,0,0.2);
+            border-color: rgba(147, 7, 240, 0.8);
+        }
+
+        .custom-slide img {
+            width: 100%;
+            height: 400px;         /* 👈 这里控制新跑马灯的图片高度 */
+            object-fit: cover;
+            display: block;
+        }
+        
+        .custom-title {
+            padding: 12px;
+            text-align: center;
+            font-weight: 600;
+            color: var(--text-main);
+            background: white;
         }
 
         /* 隐藏原来的左右按钮，因为现在是自动滚动 */
@@ -310,6 +466,7 @@
     </style>
 </head>
 
+
 <body>
     <div class="container">
         <!-- 悬浮导航 -->
@@ -321,45 +478,89 @@
                     <li><a href="#skills">경력</a></li>
                     <li><a href="#projects">작품</a></li>
                     <li><a href="#contact">연락처</a></li>
-                    <li><a href="#aboutsddsd">학력</a></li>
+                    
                 </ul>
             </div>
         </header>
 
+
+
         <!-- Hero -->
         <section class="hero card">
-            <img class="avatar" src="image/touxiang.jpg" alt="Profile">
-            <h1 class="hero-title">장빈</h1>
-            <p class="hero-subtitle">3D Modeling | Video Design | AI Animation</p>
-            <p  class="hero-desc" style="font-size: 1.2rem; font-weight: bold;">
-    fl7548085@gmail.com<br>
-            </p>
-          
-            </p>
-            <div class="btn-group">
-                <a href="#contact" class="btn btn-primary">연락 메일</a>
-                <a href="#projects" class="btn btn-outline">작품 보기</a>
+            <!-- 左侧：头像 -->
+            <div class="hero-image-wrapper">
+                <img class="avatar" src="image/touxiang.jpg" alt="Profile">
+            </div>
+
+            <!-- 右侧：文字介绍 -->
+            <div class="hero-content">
+                <h1 class="hero-title">장빈</h1>
+                <p class="hero-subtitle">3D Modeling | Video Design | AI Animation</p>
+                <p class="hero-desc" style="font-size: 1.2rem; font-weight: bold;">
+                    fl7548085@gmail.com
+                </p>
+                <div class="btn-group">
+                    <a href="#contact" class="btn btn-primary">연락 메일</a>
+                    <a href="#projects" class="btn btn-outline">작품 보기</a>
+                </div>
             </div>
         </section>
 
         <!-- Education -->
-        <section id="about" class="card">
-            <h2>학력 (Education)</h2>
-            <div class="about-content">
-                <p><strong>2026 - Present</strong> | 한양대학교 영상디자인 박사과정 재학</p>
-                <p><strong>2026</strong> | 상명대학교 애니메이션·만화 전공 졸업</p>
-                <p><strong>2017</strong> | 중국 길림애니메이션대학교 애니메이션 전공 졸업</p>
-            </div>
-        </section>
+           <!-- Education / Works (独立跑马灯板块 - 修复版) -->
+        <section id="abouts" class="card">
+            <h2>작품 (Works)</h2>
+            <p style="margin-bottom: 20px; color: #666;">更多个人创作与设计展示</p>
+            
+            <!-- 独立跑马灯容器 -->
+            <div class="marquee-custom-container">
+                <div class="marquee-custom-track">
+                    
+                    <!-- === 第一组图片 (原始数据 - 建议至少放 4-5 张不同的图) === -->
+                    <div class="custom-slide">
+                        <img src="image/魔域.jpg" alt="Work 1">
+                        <div class="custom-title">Concept Art 01</div>
+                    </div>
+                    <div class="custom-slide">
+                        <img src="image/许愿神龙.jpg" alt="Work 2">
+                        <div class="custom-title">Character Design</div>
+                    </div>
+                    <div class="custom-slide">
+                        <img src="image/山海经之再见怪兽.jpg" alt="Work 3">
+                        <div class="custom-title">Environment 01</div>
+                    </div>
+                    <div class="custom-slide">
+                        <img src="image/长空之王.jpg" alt="Work 4">
+                        <div class="custom-title">3D Modeling</div>
+                    </div>
+                    <div class="custom-slide">
+                        <img src="image/Willy's Wonderland.jpg" alt="Work 5">
+                        <div class="custom-title">Scene Design</div>
+                    </div>
 
-        <!-- Experience -->
-        <section id="skills" class="card">
-            <h2>프로젝트 경험 (Experience)</h2>
-            <div class="about-content">
-                <p><strong>2023</strong> | 후난성 천저우시 박물관 개인전 「3D 수묵 예술 속 중국 장자 사상의 시각적 표현」 개최</p>
-                <p><strong>2017 ~ 2023</strong> | 샤먼 base문화발전유한회사 3D 모델러 근무<br>
-                <span style="color:#888; font-size:0.9em;">참여 프로젝트: Wish Dragon, Goodbye Monster, Free Fire, Willy's Wonderland 등</span></p>
-                <p><strong>2016</strong> | 중국 넷드래곤 웹소프트 3D 배경 모델러 근무 (魔域 프로젝트)</p>
+                    <!-- === 第二组图片 (必须与第一组完全相同，用于无缝衔接) === -->
+                    <div class="custom-slide">
+                        <img src="image/魔域.jpg" alt="Work 1">
+                        <div class="custom-title">Concept Art 01</div>
+                    </div>
+                    <div class="custom-slide">
+                        <img src="image/许愿神龙.jpg" alt="Work 2">
+                        <div class="custom-title">Character Design</div>
+                    </div>
+                    <div class="custom-slide">
+                        <img src="image/山海经之再见怪兽.jpg" alt="Work 3">
+                        <div class="custom-title">Environment 01</div>
+                    </div>
+                    <div class="custom-slide">
+                        <img src="image/长空之王.jpg" alt="Work 4">
+                        <div class="custom-title">3D Modeling</div>
+                    </div>
+                    <div class="custom-slide">
+                        <img src="image/Willy's Wonderland.jpg" alt="Work 5">
+                        <div class="custom-title">Scene Design</div>
+                    </div>
+
+                </div>
             </div>
         </section>
 
@@ -436,15 +637,84 @@
                 
             </div>
         </section>
-   <!-- Education -->
+
+
+        
+   <!-- Education / Works (独立跑马灯板块) -->
         <section id="abouts" class="card">
-            <h2>학력 (Education)</h2>
-            <div class="about-content">
-                <p><strong>2026 - Present</strong> | 한양대학교 영상디자인 박사과정 재학</p>
-                <p><strong>2026</strong> | 상명대학교 애니메이션·만화 전공 졸업</p>
-                <p><strong>2017</strong> | 중국 길림애니메이션대학교 애니메이션 전공 졸업</p>
+            <h2>작품 (Works)</h2>
+            <p style="margin-bottom: 20px; color: #666;">更多个人创作与设计展示</p>
+            
+            <!-- 独立跑马灯容器 -->
+            <div class="marquee-custom-container">
+                     <div class="projects-track" id="projectsTrack">
+                    <!-- === 第一组图片 (原始数据) === -->
+                    <div class="project-slide">
+                        <img src="image/魔域.jpg" alt="Eudemons Online">
+                        <h3 class="project-title">魔域 (Eudemons Online)</h3>
+                    </div>
+                    <div class="project-slide">
+                        <img src="image/许愿神龙.jpg"  alt="Wish Dragon">
+                        <h3 class="project-title">Wish Dragon</h3>
+                    </div>
+                    <div class="project-slide">
+                        <img src="image/山海经之再见怪兽.jpg" alt="Goodbye Monster">
+                        <h3 class="project-title">Goodbye Monster</h3>
+                    </div>
+                    <div class="project-slide">
+                        <img src="image/长空之王.jpg" alt="Born to Fly">
+                        <h3 class="project-title">Grena Game PV</h3>
+                    </div>
+                    <div class="project-slide">
+                        <img src="image/Willy's Wonderland.jpg" alt="Willy's Wonderland">
+                        <h3 class="project-title">Willy's Wonderland</h3>
+                    </div>
+                    <div class="project-slide">
+                        <img src="image/蛋宝大营救.jpg" alt="Out of the Nest">
+                        <h3 class="project-title">Born to Fly</h3>
+                    </div>
+                    <div class="project-slide">
+                        <img src="image/Free Fire.jpg" alt="Free Fire">
+                        <h3 class="project-title">Born to Fly</h3>
+                    </div>
+
+                    <!-- === 第二组图片 (复制一份用于无缝衔接) === -->
+                    <div class="project-slide">
+                        <img src="image/魔域.jpg" alt="Eudemons Online">
+                        <h3 class="project-title">魔域 (Eudemons Online)</h3>
+                    </div>
+                    <div class="project-slide">
+                        <img src="image/许愿神龙.jpg" alt="Wish Dragon">
+                        <h3 class="project-title">Wish Dragon</h3>
+                    </div>
+                    <div class="project-slide">
+                        <img src="image/山海经之再见怪兽.jpg" alt="Goodbye Monster">
+                        <h3 class="project-title">Goodbye Monster</h3>
+                    </div>
+                    <div class="project-slide">
+                        <img src="image/长空之王.jpg" alt="Born to Fly">
+                        <h3 class="project-title">Grena Game PV</h3>
+                    </div>
+                    <div class="project-slide">
+                        <img src="image/Willy's Wonderland.jpg" alt="Willy's Wonderland">
+                        <h3 class="project-title">Willy's Wonderland</h3>
+                    </div>
+                    <div class="project-slide">
+                        <img src="image/蛋宝大营救.jpg" alt="Out of the Nest">
+                        <h3 class="project-title">Born to Fly</h3>
+                    </div>
+                    <div class="project-slide">
+                        <img src="image/Free Fire.jpg" alt="Free Fire">
+                        <h3 class="project-title">Born to Fly</h3>
+                    </div>
+                    
+
+                </div>
             </div>
         </section>
+
+
+
         <!-- Contact -->
         <section id="contact" class="card" style="text-align: center;">
             <h2>이메일 및 전화번호 (Contact)</h2>
