@@ -371,23 +371,23 @@
             padding: 20px 0;
             overflow: hidden;
             width: 100%;
-            margin-top: 20px;
+            margin-top: 20px; /* 与标题的间距 */
         }
 
         .marquee-custom-track {
             display: flex;
-            gap: 20px; 
-            width: max-content; /* 关键：宽度由内容决定，不能是 100% */
-            animation: scrollCustom 30s linear infinite; /* 速度稍微调慢一点更流畅 */
+            gap: 20px; /* 图片之间的间距 */
+            width: max-content;
+            animation: scrollCustom 25s linear infinite; /* 25s是速度，越小越快 */
         }
 
         .marquee-custom-track:hover {
-            animation-play-state: paused;
+            animation-play-state: paused; /* 鼠标悬停暂停 */
         }
 
         @keyframes scrollCustom {
             0% { transform: translateX(0); }
-            100% { transform: translateX(-50%); } /* 关键：移动一半的距离，因为内容复制了一份 */
+            100% { transform: translateX(-50%); }
         }
 
         /* 独立卡片的样式，可以单独控制大小 */
@@ -507,60 +507,23 @@
         </section>
 
         <!-- Education -->
-           <!-- Education / Works (独立跑马灯板块 - 修复版) -->
-        <section id="abouts" class="card">
-            <h2>작품 (Works)</h2>
-            <p style="margin-bottom: 20px; color: #666;">更多个人创作与设计展示</p>
-            
-            <!-- 独立跑马灯容器 -->
-            <div class="marquee-custom-container">
-                <div class="marquee-custom-track">
-                    
-                    <!-- === 第一组图片 (原始数据 - 建议至少放 4-5 张不同的图) === -->
-                    <div class="custom-slide">
-                        <img src="image/魔域.jpg" alt="Work 1">
-                        <div class="custom-title">Concept Art 01</div>
-                    </div>
-                    <div class="custom-slide">
-                        <img src="image/许愿神龙.jpg" alt="Work 2">
-                        <div class="custom-title">Character Design</div>
-                    </div>
-                    <div class="custom-slide">
-                        <img src="image/山海经之再见怪兽.jpg" alt="Work 3">
-                        <div class="custom-title">Environment 01</div>
-                    </div>
-                    <div class="custom-slide">
-                        <img src="image/长空之王.jpg" alt="Work 4">
-                        <div class="custom-title">3D Modeling</div>
-                    </div>
-                    <div class="custom-slide">
-                        <img src="image/Willy's Wonderland.jpg" alt="Work 5">
-                        <div class="custom-title">Scene Design</div>
-                    </div>
+        <section id="about" class="card">
+            <h2>학력 (Education)</h2>
+            <div class="about-content">
+                <p><strong>2026 - Present</strong> | 한양대학교 영상디자인 박사과정 재학</p>
+                <p><strong>2026</strong> | 상명대학교 애니메이션·만화 전공 졸업</p>
+                <p><strong>2017</strong> | 중국 길림애니메이션대학교 애니메이션 전공 졸업</p>
+            </div>
+        </section>
 
-                    <!-- === 第二组图片 (必须与第一组完全相同，用于无缝衔接) === -->
-                    <div class="custom-slide">
-                        <img src="image/魔域.jpg" alt="Work 1">
-                        <div class="custom-title">Concept Art 01</div>
-                    </div>
-                    <div class="custom-slide">
-                        <img src="image/许愿神龙.jpg" alt="Work 2">
-                        <div class="custom-title">Character Design</div>
-                    </div>
-                    <div class="custom-slide">
-                        <img src="image/山海经之再见怪兽.jpg" alt="Work 3">
-                        <div class="custom-title">Environment 01</div>
-                    </div>
-                    <div class="custom-slide">
-                        <img src="image/长空之王.jpg" alt="Work 4">
-                        <div class="custom-title">3D Modeling</div>
-                    </div>
-                    <div class="custom-slide">
-                        <img src="image/Willy's Wonderland.jpg" alt="Work 5">
-                        <div class="custom-title">Scene Design</div>
-                    </div>
-
-                </div>
+        <!-- Experience -->
+        <section id="skills" class="card">
+            <h2>프로젝트 경험 (Experience)</h2>
+            <div class="about-content">
+                <p><strong>2023</strong> | 후난성 천저우시 박물관 개인전 「3D 수묵 예술 속 중국 장자 사상의 시각적 표현」 개최</p>
+                <p><strong>2017 ~ 2023</strong> | 샤먼 base문화발전유한회사 3D 모델러 근무<br>
+                <span style="color:#888; font-size:0.9em;">참여 프로젝트: Wish Dragon, Goodbye Monster, Free Fire, Willy's Wonderland 등</span></p>
+                <p><strong>2016</strong> | 중국 넷드래곤 웹소프트 3D 배경 모델러 근무 (魔域 프로젝트)</p>
             </div>
         </section>
 
@@ -647,7 +610,9 @@
             
             <!-- 独立跑马灯容器 -->
             <div class="marquee-custom-container">
-                     <div class="projects-track" id="projectsTrack">
+               <div class="projects-container">
+                
+                <div class="projects-track" id="projectsTrack">
                     <!-- === 第一组图片 (原始数据) === -->
                     <div class="project-slide">
                         <img src="image/魔域.jpg" alt="Eudemons Online">
@@ -707,7 +672,6 @@
                         <img src="image/Free Fire.jpg" alt="Free Fire">
                         <h3 class="project-title">Born to Fly</h3>
                     </div>
-                    
 
                 </div>
             </div>
